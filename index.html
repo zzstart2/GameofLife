@@ -2,98 +2,24 @@
 <html>
     <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-      <script src="https://code.jquery.com/jquery.js"></script>
     </head>
     <style type="text/css">
-        canvas{border:dashed 2px #CCC}
+        canvas{border:dashed 2px #CCC;}
     </style>
-    <script type="text/javascript">
-        var X = 160;
-        var Y = 80;
-        var Width_X = X * 10;
-        var Height_Y = Y * 10;
-        //initMap
-        var map1 = new Array();
-        var map2 = new Array();
-        for(var i=0; i<X; i ++){
-          map1[i] = new Array();
-          map2[i] = new Array();
-          for(var j=0; j <Y; j ++){
-            map1[i][j] = 0;
-            map2[i][j] = 0;
-          }
-        }
-        //getid
-        function $$(id){
-          return document.getElementById(id);
-        }
-        //set the map by random
-        function setMap(){
-          for(var i=0; i<X; i ++){
-            for(var j=0; j<Y; j ++){
-              if (Math.random() < 0.5) {//the rate of living cells
-                map1[i][j] = 1;
-              }
-              else {
-                map1[i][j] = 0;
-              }
-            }
-          }
-        }
-        //loading the page
-        function pageLoad(){
-          var can = $$('can');
-          var cans = can.getContext('2d');
-          cans.clearRect(0,0,1600,800);
-          cans.fillStyle = 'black';
-          for(var i=0; i<X; i ++){
-            for(var j=0; j <Y; j ++){
-              if (map1[i][j] === 1) {
-                cans.fillRect(i*10,j*10,10,10);
-              }
-            }
-          }
-        }
-        //logic
-        function judge(){
-          var activeCell = 0;
-          var C_up, C_down, C_left, C_right;
-          for(var i=0; i<X; i ++){
-            for(var j=0; j <Y; j ++){
-              if (i == 0) {C_left = X-1;C_right = i+1;}
-              else if (i == X-1) {C_right = 0;C_left = i-1;}
-              else {C_right = i+1; C_left = i-1}
-              if (j == 0) {C_up = Y-1;C_down = j+1;}
-              else if (j == Y-1) {C_down = 0;C_up = j-1;}
-              else {C_up = j-1; C_down = j+1}//get the position of the
-
-              activeCell = map1[C_left][C_up] + map1[C_left][j] + map1[C_left][C_down] + map1[i][C_up] + map1[i][C_down] + map1[C_right][C_up] + map1[C_right][j] + map1[C_right][C_down];
-              if (activeCell == 3) {map2[i][j] = 1;}
-              else if (activeCell == 2) {map2[i][j] = map1[i][j];}
-              else {map2[i][j] = 0;}
-            }
-          }
-        }
-        //copy map2 to map1
-        function copy(){
-          for(var i=0; i<X; i ++){
-            for(var j=0; j <Y; j ++){
-              map1[i][j] = map2[i][j];
-            }
-          }
-        }
-        //main loop
-        function mainLoop(){
-          setMap();
-          setInterval(function(){
-            judge();
-            copy();
-            pageLoad();
-          },100);
-        }
-    </script>
-    <body onload="mainLoop();">
-        <canvas id="can" width="1600px" height="800px">4</canvas>
-
+    <body>
+      <div>
+        X(5~500): <input type="number" id="num_x" min="5" max="500" value="50"/>
+        Y(5~500): <input type="number" id="num_y" min="5" max="500" value="50"/>
+        thickness(0.01~1.00): <input type="number" id="thickness" min="0.01" max="1" value="0.5"/>
+        rate(10~10000): <input type="number" id="rate" min="10" max="10000" value="100"/>ms
+      </div>
+      <div>
+        <p>注：X,Y为两个方向上的细胞个数，thickness为初始状态下的活细胞密度，rate为两次刷新键的时间间隔;</p>
+        <p>在数据设置完毕后请点击“Set/Clear”键部署地图然后在地图上设置“墙壁”的位置。设置完成后，点击“Start”开始。</p>
+        <input type="button" id="clear" value="Set/Clear"/>
+        <input type="button" id="start" value="Start"/>
+      </div>
+      <canvas id="can" width="500px" height="500px" style="border:0"></canvas>
+      <script type="text/javascript" src="gameoflife.js"></script>
     </body>
 </html>
